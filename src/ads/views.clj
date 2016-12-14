@@ -15,8 +15,8 @@
 (defn login [req]
   (render-file "login.html" {}))
 
-(defn post-login [req]
-  )
+(defn post-login [{{login :login password :password} :params :as req}]
+  (render-file "login.html" {:arg req :l login :p password}))
 
 (defn category [category-slug]
   (let [cat (m/get-cat category-slug)]

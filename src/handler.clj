@@ -1,7 +1,6 @@
 (ns handler
   (:use
-    [ring.util.response]
-    [org.httpkit.server :only [run-server]])
+    [ring.util.response])
   (:require [clojure.java.io]
             [compojure.core :refer :all]
             [compojure.route :as route]
@@ -22,9 +21,9 @@
 
 
 (defroutes app-routes
-           (GET "/" [session] v/index)
-           (GET "/login" [] v/login)
-           (POST "/login" [] v/post-login)
+           (GET "/" [session :as req] v/index)
+           (GET "/login" [:as req] v/login)
+           (POST "/login" [req] v/post-login)
 
            (GET "/:category-slug" [category-slug] (v/category category-slug))
            (GET "/:category-slug/:ad-id" [category-slug ad-id] (v/ad category-slug ad-id))
