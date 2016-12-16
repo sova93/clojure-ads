@@ -24,6 +24,8 @@
            (GET "/" [session :as req] v/index)
            (GET "/login" [:as req] v/login)
            (POST "/login" [req] v/post-login)
+           (GET "/signup" [req] v/signup)
+           (POST "/signup" [req] v/post-signup)
            (GET "/logout" [req] v/logout)
 
            (GET "/:category-slug" [category-slug :as req] (v/category category-slug req))

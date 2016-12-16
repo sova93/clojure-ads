@@ -13,3 +13,8 @@
       nil)
     )
   )
+
+(defn is-authenticated? [req]
+  (if (get-in req [:session :identity :username] nil)
+    true
+    false))

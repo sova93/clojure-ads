@@ -30,6 +30,16 @@
 (defn logout [req]
   (assoc (redirect "/") :session (assoc (:session req) :identity {})))
 
+(defn signup [req]
+  (if (h/is-authenticated? req)
+    (redirect "/")
+    (render-file "signup.html" {:sess (:session req)}))
+
+  )
+
+(defn post-signup [req]
+  )
+
 (defn category [category-slug req]
   (let [cat (m/get-cat category-slug)]
     (if cat
