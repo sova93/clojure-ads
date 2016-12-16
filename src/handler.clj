@@ -25,8 +25,8 @@
            (GET "/login" [:as req] v/login)
            (POST "/login" [req] v/post-login)
 
-           (GET "/:category-slug" [category-slug] (v/category category-slug))
-           (GET "/:category-slug/:ad-id" [category-slug ad-id] (v/ad category-slug ad-id))
+           (GET "/:category-slug" [category-slug :as req] (v/category category-slug req))
+           (GET "/:category-slug/:ad-id" [category-slug ad-id :as req] (v/ad category-slug ad-id req))
 
 
 
