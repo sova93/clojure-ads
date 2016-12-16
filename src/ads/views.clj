@@ -22,17 +22,15 @@
   (render-file "add-ads.html" {:cats (m/get-cats)}))
 
 (defn post-add-ads [{{category :category title :title discription :description telephone :telephone} :params :as req}]
-  (render-file "add-ads.html"))
+  (render-file "add-ads.html" {}))
 
-(defn post-login [{{login :login password :password} :params :as req}]
-  (render-file "login.html" {:arg req :l login :p password}))
 (defn post-login [{{login :login password :password} :params session :session :as req}]
   (let [user-from-db (h/login-user login password)]
     (if user-from-db
       (do
         (assoc (redirect "/") :session (assoc session :identity (select-keys user-from-db [:login :id]))))
       (do
-        (render-file "login.html" {:error_message "Something wrong with your credentials!" :q user-from-db}))
+        (render-file "login.html" {:error_message "Something wrong with your credentials!" :q user-from-db :req req}))
       )
     )
   )
