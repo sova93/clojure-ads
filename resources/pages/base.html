@@ -6,6 +6,10 @@
 
 <a href="/">Index</a>
 
+{% if error_message %}
+<h1><font color="red">{{error_message}}</font></h1>
+{% endif %}
+
 
 {% if sess.identity.login %}
 <a href="/logout">Logout</a>

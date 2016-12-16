@@ -20,9 +20,9 @@
   (let [user-from-db (h/login-user login password)]
     (if user-from-db
       (do
-        (assoc (redirect "/") :session (assoc session :identity (dissoc user-from-db :password))))
+        (assoc (redirect "/") :session (assoc session :identity (select-keys user-from-db [:login :id]))))
       (do
-        (redirect "/"))
+        (render-file "login.html" {:error_message "Something wrong with your credentials!" :q user-from-db}))
       )
     )
   )

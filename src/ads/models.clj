@@ -30,6 +30,7 @@
                           [:phone "varchar(128)"]
                           [:add_phone "varchar(128)"]
 
+                          [:activated :integer]
                           ])))
 
 
@@ -44,9 +45,10 @@
                               :slug "cat_2"}])
   (jdbc/insert-multi! db
                       :users [{
-                               :login    "test"
-                               :password (hashers/encrypt "test123")
-                               :email    "none@none.com"
+                               :login     "test"
+                               :password  (hashers/encrypt "test123")
+                               :email     "none@none.com"
+                               :activated 1
                                }])
   )
 
