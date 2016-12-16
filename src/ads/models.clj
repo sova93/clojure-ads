@@ -16,6 +16,15 @@
                           [:slug "varchar(128)"]]))
   (jdbc/db-do-commands db
                        (jdbc/create-table-ddl
+                         :ads
+                         [[:id :integer :primary :key :AUTOINCREMENT]
+                          [:category_id :integer]
+                          [:user_id :integer]
+                          [:title "varchar(128)"]
+                          [:description "varchar(128)"]
+                          [:tel "varchar(128)"]]))
+  (jdbc/db-do-commands db
+                       (jdbc/create-table-ddl
                          :users
                          [[:id :integer :primary :key :AUTOINCREMENT]
                           [:login "varchar(128)"]
@@ -50,6 +59,14 @@
                                :email     "none@none.com"
                                :activated 1
                                }])
+  (jdbc/insert-multi! db
+                      :ads [{
+                                :category_id  1
+                                :user_id  1
+                                :title  "Test"
+                                :description  "Bla bla bla"
+                                :tel "+234221321"
+                                }])
   )
 
 (defn init-db []
@@ -57,6 +74,7 @@
     (do
       (jdbc/db-do-commands db (jdbc/drop-table-ddl :cats))
       (jdbc/db-do-commands db (jdbc/drop-table-ddl :users))
+      (jdbc/db-do-commands db (jdbc/drop-table-ddl :ads))
       (create-tables)
       (insert-sample-data))))
 ;(catch java.sql.BatchUpdateException e)))
@@ -66,6 +84,10 @@
 (defn get-cats []
   (jdbc/query db "SELECT * FROM cats"))
 
+(defn get-ads []
+  (jdbc/query db "SELECT * FROM ads"))
+(defn insert-ads []
+  (jdbc/query db "INSERT * FROM ads"))
 (defn get-cat [category-slug]
   (first
     (jdbc/query
