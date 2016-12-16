@@ -15,6 +15,6 @@
   )
 
 (defn is-authenticated? [req]
-  (if (get-in req [:session :identity :username] nil)
+  (if (get-in req [:session :identity :login] nil)
     true
     false))

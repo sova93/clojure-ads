@@ -7,5 +7,27 @@ __Category Title__
 {% block content %}
 <h1>SIGNUP</h1>
 
+<form action="">
+    <input type="text" placeholder="login"><br/>
+    <input type="password" placeholder="password"><br/>
+    <input type="password" placeholder="repeat password"><br/>
+    <input type="text" placeholder="email"><br/>
+    <input type="text" placeholder="email repeat"><br/>
+    <input type="text" placeholder="sex"><br/>
+    <input type="text" placeholder="name"><br/>
+    <input type="text" placeholder="surname"><br/>
+    <input type="text" placeholder="lastname"><br/>
+    <input type="text" placeholder="country"><br/>
+    <input type="text" placeholder="city"><br/>
+    <input type="text" placeholder="phone"><br/>
+    <input type="text" placeholder="additional phone"><br/>
+    <input type="text" placeholder="sign paper"><br/>
+
+    {% csrf-field %}
+
+    <button type="submit">Sign in</button>
+
+
+</form>
 
 {% endblock %}

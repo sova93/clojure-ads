@@ -18,10 +18,17 @@
                        (jdbc/create-table-ddl
                          :users
                          [[:id :integer :primary :key :AUTOINCREMENT]
-                          [:username "varchar(128)"]
+                          [:login "varchar(128)"]
                           [:password "varchar(128)"]
                           [:email "varchar(256)"]
-                          [:activated :integer]
+                          [:sex "varchar(6)"]
+                          [:name "varchar(128)"]
+                          [:surname "varchar(128)"]
+                          [:lastname "varchar(128)"]
+                          [:country "varchar(128)"]
+                          [:city "varchar(128)"]
+                          [:phone "varchar(128)"]
+                          [:add_phone "varchar(128)"]
 
                           ])))
 
@@ -37,10 +44,9 @@
                               :slug "cat_2"}])
   (jdbc/insert-multi! db
                       :users [{
-                               :username  "test"
-                               :password  (hashers/encrypt "test123")
-                               :email     "none@none.com"
-                               :activated 1
+                               :login    "test"
+                               :password (hashers/encrypt "test123")
+                               :email    "none@none.com"
                                }])
   )
 
@@ -68,5 +74,5 @@
 (defn get-username [username]
   (first
     (jdbc/query db
-                ["SELECT * FROM users WHERE username = ?" username]
+                ["SELECT * FROM users WHERE login = ?" username]
                 )))
