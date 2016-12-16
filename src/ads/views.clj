@@ -1,9 +1,10 @@
 (ns ads.views
   (:require [clojure.java.io]
-            [ring.util.response :refer [response]]
+            [ring.util.response :refer [response redirect]]
             [ads.models :as m]
             [selmer.parser :refer [render-file]]
-            [compojure.route :as route]))
+            [compojure.route :as route]
+            [ads.helpers :as h]))
 
 
 (defn index [session]
@@ -15,8 +16,16 @@
 (defn login [req]
   (render-file "login.html" {}))
 
-(defn post-login [{{login :login password :password} :params :as req}]
-  (render-file "login.html" {:arg req :l login :p password}))
+(defn post-login [{{login :login password :password} :params session :session :as req}]
+  (let [user-from-db (h/login-user login password)]
+    (if user-from-db
+      (do
+        (assoc (redirect "/") :session (assoc session :identity (dissoc user-from-db :password))))
+      (do
+        (redirect "/"))
+      )
+    )
+  )
 
 (defn category [category-slug]
   (let [cat (m/get-cat category-slug)]

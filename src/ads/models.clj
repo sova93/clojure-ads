@@ -65,6 +65,8 @@
       ["SELECT * FROM cats WHERE slug = ? LIMIT 1" category-slug])))
 
 
-
-
-
+(defn get-username [username]
+  (first
+    (jdbc/query db
+                ["SELECT * FROM users WHERE username = ?" username]
+                )))

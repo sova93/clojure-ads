@@ -1,11 +1,15 @@
 (ns ads.helpers
-  :require
-  [
-   [buddy.hashers :as hashers]
-   ]
-  (:require [buddy.hashers :as hashers]))
+  (:require
+    [ads.models :as m]
+    [buddy.hashers :as hashers]
+    ))
 
 (defn login-user [login password]
-  (let [hashed-prompted-password (hashers/encrypt password)]
+  (let [user-from-db (m/get-username login)]
+    (if (= 1 (:activated user-from-db))
+      (if (hashers/check password (:password user-from-db))
+        user-from-db
+        nil)
+      nil)
     )
-  nil)
+  )
