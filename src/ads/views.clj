@@ -14,7 +14,7 @@
   )
 
 (defn login [req]
-  (render-file "login.html" {}))
+  (render-file "login.html" {:sess (:session req)}))
 
 (defn post-login [{{login :login password :password} :params session :session :as req}]
   (let [user-from-db (h/login-user login password)]
@@ -27,14 +27,14 @@
     )
   )
 
-(defn category [category-slug]
+(defn logout [req]
+  (assoc (redirect "/") :session (assoc (:session req) :identity {})))
+
+(defn category [category-slug req]
   (let [cat (m/get-cat category-slug)]
     (if cat
-      (render-file "category.html" {:cat cat})
+      (render-file "category.html" {:cat cat :sess (:session req)})
       (route/not-found "Not found"))))
 
-
-
-
-(defn ad [category-slug ad-id]
-  (render-file "ad.html" {}))
+(defn ad [category-slug ad-id req]
+  (render-file "ad.html" {:sess (:session req)}))
