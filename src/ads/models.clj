@@ -89,15 +89,17 @@
 (defn get-ads []
   (jdbc/query db "SELECT * FROM ads"))
 
+(defn get-ads-by-cat [slug]
+  (jdbc/query db ["SELECT * FROM cats INNER JOIN ads ON ads.category_id = cats.id WHERE cats.slug = ?" slug]))
+
 (defn insert-ad [category_id user_id title description tel]
   (jdbc/insert! db :ads {:category_id category_id :user_id user_id :title title :description description :tel tel} ))
 
 (defn delete-ad [id]
   (jdbc/delete! db :ads ["id=?" id] ))
 
-;(defn update-ad [id]
-;  (jdbc/update! db :ads ["id=?" id] ))
-;(update! db :person {:zip 94540} ["zip = ?" 94546])
+(defn update-ad [id]
+  (jdbc/update! db :ads ["id=?" id] ))
 
 (defn insert-user [map]
   (jdbc/insert! db :users (assoc (assoc map :password (hashers/encrypt (:password map))) :activated 1)))

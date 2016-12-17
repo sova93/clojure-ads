@@ -150,7 +150,7 @@
 (defn category [category-slug req]
   (let [cat (m/get-cat category-slug)]
     (if cat
-      (render-file "category.html" {:cat cat :sess (:session req)})
+      (render-file "category.html" {:cat cat :ads (m/get-ads-by-cat category-slug) :sess (:session req)})
       (route/not-found "Not found"))))
 
 (defn ad [category-slug ad-id req]

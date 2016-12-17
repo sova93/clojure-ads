@@ -8,4 +8,15 @@ __Category Title__
 "{{ cat }}"
 <h1>Category _{{ cat.name }}_</h1>
 
+{% for ad in ads %}
+<table border="1">
+    <tr><td>Title</td><td>{{ad.title}}</td></tr>
+    <tr><td>Telephone</td><td>{{ad.tel}}</td></tr>
+    <tr><td>Description</td><td>{{ad.description}}</td></tr>
+</table></br>
+
+<br/>
+{% endfor %}
+
+
 {% endblock %}
