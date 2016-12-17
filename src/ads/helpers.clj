@@ -13,8 +13,6 @@
       nil)
     )
   )
-(defn create-user [login password]
-  )
 
 (defn is-authenticated? [req]
   (if (get-in req [:session :identity :login] nil)

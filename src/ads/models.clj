@@ -40,7 +40,9 @@
                           [:add_phone "varchar(128)"]
 
                           [:activated :integer]
-                          ])))
+                          ]))
+  (jdbc/execute! db "CREATE UNIQUE INDEX IF NOT EXISTS unique_login ON users (login)")
+  )
 
 
 
@@ -89,6 +91,9 @@
 
 (defn insert-ads [category_id user_id title description tel]
   (jdbc/insert! db :ads {:category_id category_id :user_id user_id :title title :description description :tel tel} ))
+
+(defn insert-user [map]
+  (jdbc/insert! db :users (assoc map :password (hashers/encrypt (:password map)))))
 
 (defn get-cat [category-slug]
   (first

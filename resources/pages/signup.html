@@ -12,7 +12,7 @@ __Category Title__
     {% if not login_ok %}
     Login not ok
     {% endif %}
-    <input type="text" name="login" placeholder="login"><br/>
+    <input type="text" name="login" placeholder="login" value="{{login}}"><br/>
     {% if not passwd_ok %}
     passwd not ok
     {% endif %}
@@ -24,21 +24,48 @@ __Category Title__
     {% if not email_ok %}
     email not ok
     {% endif %}
-    <input type="text" name="email" placeholder="email"><br/>
+    <input type="text" name="email" placeholder="email" value="{{email}}"><br/>
     {% if not email_repeat %}
     emails not same
     {% endif %}
     <input type="text" name="email_repeat" placeholder="email repeat"><br/>
 
 
-    <input type="text" name="sex" placeholder="sex"><br/>
-    <input type="text" name="name" placeholder="name"><br/>
-    <input type="text" name="surname" placeholder="surname"><br/>
-    <input type="text" name="lastname" placeholder="lastname"><br/>
-    <input type="text" name="country" placeholder="country"><br/>
-    <input type="text" name="city" placeholder="city"><br/>
-    <input type="text" name="phone" placeholder="phone"><br/>
-    <input type="text" name="add_phone" placeholder="additional phone"><br/>
+    {% if not sex_ok %}
+    sex not in [ male female ]
+    {% endif %}
+    <input type="text" name="sex" placeholder="sex" value="{{sex}}"><br/>
+    {% if not name_ok %}
+    name is not ok
+    {% endif %}
+    <input type="text" name="name" placeholder="name" value="{{name}}"><br/>
+    {% if not surname_ok %}
+    surname is not ok
+    {% endif %}
+    <input type="text" name="surname" placeholder="surname" value="{{surname}}"><br/>
+    {% if not lastname_ok %}
+    surname is not ok
+    {% endif %}
+    <input type="text" name="lastname" placeholder="lastname" value="{{lastname}}"><br/>
+    {% if not country_ok %}
+    country is not ok
+    {% endif %}
+    <input type="text" name="country" placeholder="country" value="{{country}}"><br/>
+    {% if not city_ok %}
+    city is not ok
+    {% endif %}
+    <input type="text" name="city" placeholder="city" value="{{city}}"><br/>
+    {% if not phone_ok %}
+    phone is not ok
+    {% endif %}
+    <input type="text" name="phone" placeholder="phone" value="{{phone}}"><br/>
+    {% if not add_phone_ok %}
+    add_phone is not ok
+    {% endif %}
+    <input type="text" name="add_phone" placeholder="additional phone" value="{{add_phone}}"><br/>
+    {% if not signed_ok %}
+    surname is not ok
+    {% endif %}
     <input type="text" name="signed" placeholder="sign paper"><br/>
 
     {% csrf-field %}

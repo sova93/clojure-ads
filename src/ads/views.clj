@@ -26,9 +26,6 @@
   (m/insert-ads (get-in req [:session :identity :id] nil) category_id title discription telephone )
   (render-file "add-ads.html" [req]))
 
-(defn post-login [{{login :login password :password} :params :as req}]
-  (render-file "login.html" {:arg req :l login :p password}))
-
 (defn post-login [{{login :login password :password} :params session :session :as req}]
   (let [user-from-db (h/login-user login password)]
     (if user-from-db
@@ -53,6 +50,15 @@
                                 :password_repeat_ok true
                                 :email_ok           true
                                 :email_repeat       true
+                                :sex_ok             true
+                                :name_ok            true
+                                :surname_ok         true
+                                :lastname_ok        true
+                                :country_ok         true
+                                :city_ok            true
+                                :phone_ok           true
+                                :add_phone_ok       true
+                                :signed_ok          true
                                 }))
 
   )
@@ -63,24 +69,72 @@
                      password_repeat :password_repeat
                      email           :email
                      email_repeat    :email_repeat
+                     sex             :sex
+                     name            :name
+                     surname         :surname
+                     lastname        :lastname
+                     country         :country
+                     city            :city
+                     phone           :phone
+                     add_phone       :add_phone
+                     signed          :signed
+
                      } :params :as req}]
-  (let [login_ok (valid/check-range login 2 10)
+  (let [login_ok (and (valid/check-range login 2 10) (valid/check-login-free? login))
         passwd_ok (valid/check-range password 2 10)
         password_repeat_ok (= password password_repeat)
         email_ok (valid/check-range email 2 10)
         email_repeat (= email email_repeat)
+        sex_ok (valid/check-in sex ["male" "female"])
+        name_ok (valid/check-range name 2 10)
+        surname_ok (valid/check-range surname 2 10)
+        lastname_ok (valid/check-range lastname 2 10)
+        country_ok (valid/check-range country 2 10)
+        city_ok (valid/check-range city 2 10)
+        phone_ok (valid/check-range phone 2 10)
+        add_phone_ok (valid/check-range add_phone 2 10)
+        signed_ok (valid/check-range signed 2 10)
         ]
-    (if (and login_ok passwd_ok password_repeat email_ok email_repeat)
+    (if (and login_ok passwd_ok password_repeat_ok email_ok email_repeat sex_ok name_ok surname_ok lastname_ok country_ok city_ok phone_ok add_phone_ok signed_ok)
       (do
-        (h/create-user login password)
+        (m/insert-user {:login     login
+                        :password  password
+                        :email     email
+                        :sex       sex
+                        :name      name
+                        :surname   surname
+                        :lastname  lastname
+                        :country   country
+                        :city      city
+                        :phone     phone
+                        :add_phone add_phone})
         ;(h/login-user login password)
         )
       (render-file "signup.html" {:req                req
+                                  :login              login
                                   :login_ok           login_ok
                                   :passwd_ok          passwd_ok
                                   :password_repeat_ok password_repeat_ok
+                                  :email              email
                                   :email_ok           email_ok
                                   :email_repeat       email_repeat
+                                  :sex                sex
+                                  :sex_ok             sex_ok
+                                  :name               name
+                                  :name_ok            name_ok
+                                  :surname            surname
+                                  :surname_ok         surname_ok
+                                  :lastname           lastname
+                                  :lastname_ok        lastname_ok
+                                  :country            country
+                                  :country_ok         country_ok
+                                  :city               city
+                                  :city_ok            city_ok
+                                  :phone              phone
+                                  :phone_ok           phone_ok
+                                  :add_phone          add_phone
+                                  :add_phone_ok       add_phone_ok
+                                  :signed_ok          signed_ok
 
                                   })))
 
