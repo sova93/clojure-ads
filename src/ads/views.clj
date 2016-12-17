@@ -20,12 +20,14 @@
     (redirect "/")
     (render-file "login.html" {:sess (:session req)}))
   )
+(defn ads [req]
+  (render-file "ads.html" {:ads (m/get-ads)}))
 
 (defn add-ads [req]
   (render-file "add-ads.html" {:cats (m/get-cats)}))
 
 (defn post-add-ads [{{category_id :category_id title :title discription :description telephone :telephone} :params :as req}]
-  (m/insert-ads (get-in req [:session :identity :id] nil) category_id title discription telephone )
+  (m/insert-ad  category_id (get-in req [:session :identity :id] nil) title discription telephone )
   (render-file "add-ads.html" [req]))
 
 (defn post-login [{{login :login password :password} :params session :session :as req}]

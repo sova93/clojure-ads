@@ -22,6 +22,7 @@
 
 (defroutes app-routes
            (GET "/" [session :as req] v/index)
+  (GET "/ads" [ :as req] v/ads)
            (GET "/login" [:as req] v/login)
            (GET "/add-ads" [:as req] v/add-ads)
            (POST "/add-ads" [:as req] v/post-add-ads)

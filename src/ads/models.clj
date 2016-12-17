@@ -89,8 +89,15 @@
 (defn get-ads []
   (jdbc/query db "SELECT * FROM ads"))
 
-(defn insert-ads [category_id user_id title description tel]
+(defn insert-ad [category_id user_id title description tel]
   (jdbc/insert! db :ads {:category_id category_id :user_id user_id :title title :description description :tel tel} ))
+
+(defn delete-ad [id]
+  (jdbc/delete! db :ads ["id=?" id] ))
+
+;(defn update-ad [id]
+;  (jdbc/update! db :ads ["id=?" id] ))
+;(update! db :person {:zip 94540} ["zip = ?" 94546])
 
 (defn insert-user [map]
   (jdbc/insert! db :users (assoc (assoc map :password (hashers/encrypt (:password map))) :activated 1)))
