@@ -16,10 +16,12 @@
   )
 
 (defn login [req]
-  (render-file "login.html" {:sess (:session req)}))
+  (if (h/is-authenticated? req)
+    (redirect "/")
+    (render-file "login.html" {:sess (:session req)}))
+  )
 
 (defn add-ads [req]
-
   (render-file "add-ads.html" {:cats (m/get-cats)}))
 
 (defn post-add-ads [{{category_id :category_id title :title discription :description telephone :telephone} :params :as req}]
