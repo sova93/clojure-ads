@@ -15,3 +15,7 @@
       true)
     )
   )
+
+(def email-pattern #"(/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[\w-]{2,4}$/)")
+
+(defn check-email [email])
