@@ -85,7 +85,7 @@
   (let [login_ok (and (valid/check-range login 2 10) (valid/check-login-free? login))
         passwd_ok (valid/check-range password 2 10)
         password_repeat_ok (= password password_repeat)
-        email_ok (valid/check-range email 2 10)
+        email_ok (and (valid/check-range email 2 32) (valid/check-email? email))
         email_repeat (= email email_repeat)
         sex_ok (valid/check-in sex ["male" "female"])
         name_ok (valid/check-range name 2 10)
@@ -93,8 +93,8 @@
         lastname_ok (valid/check-range lastname 2 10)
         country_ok (valid/check-range country 2 10)
         city_ok (valid/check-range city 2 10)
-        phone_ok (valid/check-range phone 2 10)
-        add_phone_ok (valid/check-range add_phone 2 10)
+        phone_ok (and (valid/check-len phone 13) (valid/check-phone? phone))
+        add_phone_ok (and (valid/check-len add_phone 13) (valid/check-phone? add_phone))
         signed_ok (valid/check-range signed 2 10)
         ]
     (if (and login_ok passwd_ok password_repeat_ok email_ok email_repeat sex_ok name_ok surname_ok lastname_ok country_ok city_ok phone_ok add_phone_ok signed_ok)
@@ -109,7 +109,8 @@
                         :country   country
                         :city      city
                         :phone     phone
-                        :add_phone add_phone})
+                        :add_phone add_phone
+                        })
         (assoc (redirect "/") :session (assoc session :identity (select-keys (h/login-user login password) [:login :id])))
         )
       (render-file "signup.html" {:req                req
@@ -137,6 +138,8 @@
                                   :add_phone          add_phone
                                   :add_phone_ok       add_phone_ok
                                   :signed_ok          signed_ok
+                                  :add_count          (count phone)
+                                  :add_count2         (valid/check-phone? phone)
 
                                   })))
 

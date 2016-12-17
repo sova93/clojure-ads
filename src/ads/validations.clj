@@ -1,9 +1,12 @@
 (ns ads.validations
-  (:require [clojure.string :refer [blank?]]
+  (:require [clojure.string :refer [blank? starts-with?]]
             [ads.models :as m]))
 
 (defn check-range [str min max]
   (not (or (blank? str) (> (count str) max) (< (count str) min))))
+
+(defn check-len [str len]
+  (= (count str) len))
 
 (defn check-in [vl coll]
   (.contains coll vl))
@@ -16,6 +19,13 @@
     )
   )
 
-(def email-pattern #"(/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[\w-]{2,4}$/)")
+(defn check-email? [email]
+  (if (and (string? email) (re-matches #"^.+\@.+\..+$" email))
+    true
+    false)
+  )
 
-(defn check-email [email])
+(defn check-phone? [phone]
+  (if (starts-with? phone "+375")
+    true
+    false))
