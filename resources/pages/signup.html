@@ -7,21 +7,39 @@ __Category Title__
 {% block content %}
 <h1>SIGNUP</h1>
 
-<form action="">
-    <input type="text" placeholder="login"><br/>
-    <input type="password" placeholder="password"><br/>
-    <input type="password" placeholder="repeat password"><br/>
-    <input type="text" placeholder="email"><br/>
-    <input type="text" placeholder="email repeat"><br/>
-    <input type="text" placeholder="sex"><br/>
-    <input type="text" placeholder="name"><br/>
-    <input type="text" placeholder="surname"><br/>
-    <input type="text" placeholder="lastname"><br/>
-    <input type="text" placeholder="country"><br/>
-    <input type="text" placeholder="city"><br/>
-    <input type="text" placeholder="phone"><br/>
-    <input type="text" placeholder="additional phone"><br/>
-    <input type="text" placeholder="sign paper"><br/>
+<form action="" method="POST">
+
+    {% if not login_ok %}
+    Login not ok
+    {% endif %}
+    <input type="text" name="login" placeholder="login"><br/>
+    {% if not passwd_ok %}
+    passwd not ok
+    {% endif %}
+    <input type="password" name="password" placeholder="password"><br/>
+    {% if not password_repeat_ok %}
+    passwds not similar
+    {% endif %}
+    <input type="password" name="password_repeat" placeholder="repeat password"><br/>
+    {% if not email_ok %}
+    email not ok
+    {% endif %}
+    <input type="text" name="email" placeholder="email"><br/>
+    {% if not email_repeat %}
+    emails not same
+    {% endif %}
+    <input type="text" name="email_repeat" placeholder="email repeat"><br/>
+
+
+    <input type="text" name="sex" placeholder="sex"><br/>
+    <input type="text" name="name" placeholder="name"><br/>
+    <input type="text" name="surname" placeholder="surname"><br/>
+    <input type="text" name="lastname" placeholder="lastname"><br/>
+    <input type="text" name="country" placeholder="country"><br/>
+    <input type="text" name="city" placeholder="city"><br/>
+    <input type="text" name="phone" placeholder="phone"><br/>
+    <input type="text" name="add_phone" placeholder="additional phone"><br/>
+    <input type="text" name="signed" placeholder="sign paper"><br/>
 
     {% csrf-field %}
 

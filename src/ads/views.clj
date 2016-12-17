@@ -4,7 +4,8 @@
             [ads.models :as m]
             [selmer.parser :refer [render-file]]
             [compojure.route :as route]
-            [ads.helpers :as h]))
+            [ads.helpers :as h]
+            [ads.validations :as valid]))
 
 
 (defn index [session]
@@ -41,11 +42,44 @@
 (defn signup [req]
   (if (h/is-authenticated? req)
     (redirect "/")
-    (render-file "signup.html" {:sess (:session req)}))
+    (render-file "signup.html" {
+                                :sess               (:session req)
+                                :login_ok           true
+                                :passwd_ok          true
+                                :password_repeat_ok true
+                                :email_ok           true
+                                :email_repeat       true
+                                }))
 
   )
 
-(defn post-signup [req]
+(defn post-signup [{{
+                     login           :login
+                     password        :password
+                     password_repeat :password_repeat
+                     email           :email
+                     email_repeat    :email_repeat
+                     } :params :as req}]
+  (let [login_ok (valid/check-range login 2 10)
+        passwd_ok (valid/check-range password 2 10)
+        password_repeat_ok (= password password_repeat)
+        email_ok (valid/check-range email 2 10)
+        email_repeat (= email email_repeat)
+        ]
+    (if (and login_ok passwd_ok password_repeat email_ok email_repeat)
+      (do
+        (h/create-user login password)
+        ;(h/login-user login password)
+        )
+      (render-file "signup.html" {:req                req
+                                  :login_ok           login_ok
+                                  :passwd_ok          passwd_ok
+                                  :password_repeat_ok password_repeat_ok
+                                  :email_ok           email_ok
+                                  :email_repeat       email_repeat
+
+                                  })))
+
   )
 
 (defn category [category-slug req]
