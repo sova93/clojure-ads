@@ -19,11 +19,15 @@
   (render-file "login.html" {:sess (:session req)}))
 
 (defn add-ads [req]
-  (println req)
+
   (render-file "add-ads.html" {:cats (m/get-cats)}))
 
-(defn post-add-ads [{{category :category title :title discription :description telephone :telephone} :params :as req}]
-  (render-file "add-ads.html" {}))
+(defn post-add-ads [{{category_id :category_id title :title discription :description telephone :telephone} :params :as req}]
+  (m/insert-ads (get-in req [:session :identity :id] nil) category_id title discription telephone )
+  (render-file "add-ads.html" [req]))
+
+(defn post-login [{{login :login password :password} :params :as req}]
+  (render-file "login.html" {:arg req :l login :p password}))
 
 (defn post-login [{{login :login password :password} :params session :session :as req}]
   (let [user-from-db (h/login-user login password)]

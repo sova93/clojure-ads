@@ -86,8 +86,10 @@
 
 (defn get-ads []
   (jdbc/query db "SELECT * FROM ads"))
-(defn insert-ads []
-  (jdbc/query db "INSERT * FROM ads"))
+
+(defn insert-ads [category_id user_id title description tel]
+  (jdbc/insert! db :ads {:category_id category_id :user_id user_id :title title :description description :tel tel} ))
+
 (defn get-cat [category-slug]
   (first
     (jdbc/query
