@@ -79,7 +79,7 @@
                      add_phone       :add_phone
                      signed          :signed
 
-                     } :params :as req}]
+                     } :params session :session :as req}]
   (let [login_ok (and (valid/check-range login 2 10) (valid/check-login-free? login))
         passwd_ok (valid/check-range password 2 10)
         password_repeat_ok (= password password_repeat)
@@ -108,7 +108,7 @@
                         :city      city
                         :phone     phone
                         :add_phone add_phone})
-        ;(h/login-user login password)
+        (assoc (redirect "/") :session (assoc session :identity (select-keys (h/login-user login password) [:login :id])))
         )
       (render-file "signup.html" {:req                req
                                   :login              login
