@@ -18,3 +18,11 @@
   (if (get-in req [:session :identity :login] nil)
     true
     false))
+
+(def counter (atom {}))
+
+(defn register-new-request-to-counter [req]
+  (let [uri (:uri req)]
+    (get (swap! counter assoc uri (inc (get @counter uri 1))) uri)
+    ))
+

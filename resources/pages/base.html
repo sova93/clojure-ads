@@ -11,6 +11,7 @@
 {% endif %}
 
 
+
 {% if sess.identity.login %}
 <a href="/logout">Logout</a>
 <h1>AUTHED2</h1>
@@ -24,10 +25,14 @@
 <H1>NO LOGIN</H1>
 {% endif %}
 
+<a href="/add-ads">Add Ads</a>
+
 
 {% block content %}
 
 {% endblock %}
+
+<h3>Counter: {{counter}}</h3>
 
 {% debug %}
 

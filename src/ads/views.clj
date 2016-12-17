@@ -8,40 +8,53 @@
             [ads.validations :as valid]))
 
 
-(defn index [session]
+(defn index [req]
   (render-file "index.html" {
-                             :cats (m/get-cats)
-                             :ads (m/get-ads)
-                             :sess (:session session)})
+                             :cats    (m/get-cats)
+                             :ads     (m/get-ads)
+                             :sess    (:session req)
+                             :counter (h/register-new-request-to-counter req)})
   )
 
 (defn login [req]
   (if (h/is-authenticated? req)
     (redirect "/")
-    (render-file "login.html" {:sess (:session req)}))
+    (render-file "login.html" {
+                               :sess    (:session req)
+                               :counter (h/register-new-request-to-counter req)
+                               }))
   )
 (defn ads [req]
-  (render-file "ads.html" {:ads (m/get-ads)}))
+  (render-file "ads.html" {
+                           :ads     (m/get-ads)
+                           :counter (h/register-new-request-to-counter req)
+                           }))
 
 (defn add-ads [req]
-  (render-file "add-ads.html" {:cats (m/get-cats)}))
+  (render-file "add-ads.html" {
+                               :cats    (m/get-cats)
+                               :counter (h/register-new-request-to-counter req)
+                               }))
 
 (defn post-add-ads [{{category_id :category_id title :title discription :description telephone :telephone} :params :as req}]
   (m/insert-ad  category_id (get-in req [:session :identity :id] nil) title discription telephone )
-  (render-file "add-ads.html" [req]))
+  (render-file "add-ads.html" {:req req :counter (h/register-new-request-to-counter req)}))
 
 (defn post-login [{{login :login password :password} :params session :session :as req}]
-  (let [user-from-db (h/login-user login password)]
+  (let [user-from-db (h/login-user login password)
+        counter (h/register-new-request-to-counter req)
+        ]
     (if user-from-db
       (do
         (assoc (redirect "/") :session (assoc session :identity (select-keys user-from-db [:login :id]))))
       (do
-        (render-file "login.html" {:error_message "Something wrong with your credentials!" :q user-from-db :req req}))
+        (render-file "login.html" {:error_message "Something wrong with your credentials!" :q user-from-db :req req :counter counter}))
       )
     )
   )
 
 (defn logout [req]
+  (h/register-new-request-to-counter req)
   (assoc (redirect "/") :session (assoc (:session req) :identity {})))
 
 (defn signup [req]
@@ -63,6 +76,7 @@
                                 :phone_ok           true
                                 :add_phone_ok       true
                                 :signed_ok          true
+                                :counter            (h/register-new-request-to-counter req)
                                 }))
 
   )
@@ -98,6 +112,8 @@
         phone_ok (and (valid/check-len phone 13) (valid/check-phone? phone))
         add_phone_ok (and (valid/check-len add_phone 13) (valid/check-phone? add_phone))
         signed_ok (valid/check-range signed 2 10)
+
+        counter (h/register-new-request-to-counter req)
         ]
     (if (and login_ok passwd_ok password_repeat_ok email_ok email_repeat sex_ok name_ok surname_ok lastname_ok country_ok city_ok phone_ok add_phone_ok signed_ok)
       (do
@@ -143,6 +159,8 @@
                                   :add_count          (count phone)
                                   :add_count2         (valid/check-phone? phone)
 
+                                  :counter            counter
+
                                   })))
 
   )
@@ -150,8 +168,8 @@
 (defn category [category-slug req]
   (let [cat (m/get-cat category-slug)]
     (if cat
-      (render-file "category.html" {:cat cat :sess (:session req)})
+      (render-file "category.html" {:cat cat :sess (:session req) :counter (h/register-new-request-to-counter req)})
       (route/not-found "Not found"))))
 
 (defn ad [category-slug ad-id req]
-  (render-file "ad.html" {:sess (:session req)}))
+  (render-file "ad.html" {:sess (:session req) :counter (h/register-new-request-to-counter req)}))
