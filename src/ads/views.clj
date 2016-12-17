@@ -5,10 +5,12 @@
             [selmer.parser :refer [render-file]]
             [compojure.route :as route]
             [ads.helpers :as h]
-            [ads.validations :as valid]))
+            [ads.validations :as valid]
+            [ads.logging-service :as log]))
 
 
 (defn index [req]
+  (log/log-message-to-service "index requested")
   (render-file "index.html" {
                              :cats    (m/get-cats)
                              :ads     (m/get-ads)
@@ -17,6 +19,7 @@
   )
 
 (defn login [req]
+  (log/log-message-to-service "login requested")
   (if (h/is-authenticated? req)
     (redirect "/")
     (render-file "login.html" {
@@ -25,22 +28,26 @@
                                }))
   )
 (defn ads [req]
+  (log/log-message-to-service "ads requested")
   (render-file "ads.html" {
                            :ads     (m/get-ads)
                            :counter (h/register-new-request-to-counter req)
                            }))
 
 (defn add-ads [req]
+  (log/log-message-to-service "add ads requested")
   (render-file "add-ads.html" {
                                :cats    (m/get-cats)
                                :counter (h/register-new-request-to-counter req)
                                }))
 
 (defn post-add-ads [{{category_id :category_id title :title discription :description telephone :telephone} :params :as req}]
+  (log/log-message-to-service "post-add-ads requested")
   (m/insert-ad  category_id (get-in req [:session :identity :id] nil) title discription telephone )
   (render-file "add-ads.html" {:req req :counter (h/register-new-request-to-counter req)}))
 
 (defn post-login [{{login :login password :password} :params session :session :as req}]
+  (log/log-message-to-service "post-login requested")
   (let [user-from-db (h/login-user login password)
         counter (h/register-new-request-to-counter req)
         ]
@@ -54,10 +61,12 @@
   )
 
 (defn logout [req]
+  (log/log-message-to-service "logout requested")
   (h/register-new-request-to-counter req)
   (assoc (redirect "/") :session (assoc (:session req) :identity {})))
 
 (defn signup [req]
+  (log/log-message-to-service "signup requested")
   (if (h/is-authenticated? req)
     (redirect "/")
     (render-file "signup.html" {
@@ -98,6 +107,7 @@
                      signed          :signed
 
                      } :params session :session :as req}]
+  (log/log-message-to-service "post-signup requested")
   (let [login_ok (and (valid/check-range login 2 10) (valid/check-login-free? login))
         passwd_ok (valid/check-range password 2 10)
         password_repeat_ok (= password password_repeat)
@@ -166,10 +176,12 @@
   )
 
 (defn category [category-slug req]
+  (log/log-message-to-service "category requested")
   (let [cat (m/get-cat category-slug)]
     (if cat
       (render-file "category.html" {:cat cat :ads (m/get-ads-by-cat category-slug) :sess (:session req) :counter (h/register-new-request-to-counter req)})
       (route/not-found "Not found"))))
 
 (defn ad [category-slug ad-id req]
+  (log/log-message-to-service "ad requested")
   (render-file "ad.html" {:sess (:session req) :counter (h/register-new-request-to-counter req)}))

@@ -1,6 +1,8 @@
 (ns ads.models
   (:require [clojure.java.jdbc :as jdbc]
-            [buddy.hashers :as hashers]))
+            [buddy.hashers :as hashers]
+            )
+  )
 
 (def db {
          :classname   "org.sqlite.JDBC"
