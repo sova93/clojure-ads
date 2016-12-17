@@ -23,6 +23,6 @@
 
 (defn register-new-request-to-counter [req]
   (let [uri (:uri req)]
-    (get (swap! counter assoc uri (inc (get @counter uri 1))) uri)
+    (get (swap! counter assoc uri (inc (get @counter uri 0))) uri)
     ))
 
