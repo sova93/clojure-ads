@@ -93,7 +93,7 @@
   (jdbc/insert! db :ads {:category_id category_id :user_id user_id :title title :description description :tel tel} ))
 
 (defn insert-user [map]
-  (jdbc/insert! db :users (assoc map :password (hashers/encrypt (:password map)))))
+  (jdbc/insert! db :users (assoc (assoc map :password (hashers/encrypt (:password map))) :activated 1)))
 
 (defn get-cat [category-slug]
   (first
