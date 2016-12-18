@@ -24,11 +24,10 @@
     false))
 
 (def counter (atom {}))
+(def global-counter (atom 0))
 
-(defn get-counter-value [k]
-  (get counter k))
-
-(defn register-new-request-to-counter [uri]
+(defn counter-update [uri]
+  (swap! global-counter inc)
   (get (swap! counter assoc uri (inc (get @counter uri 0))) uri)
   )
 
@@ -39,4 +38,25 @@
                             (assoc :sess (:session req))
                             (assoc :counter (:counter req))
                             ) xs)
+  )
+
+(def logger (agent (clojure.java.io/writer "log" :append true)))
+(def flush-every 4)                                         ; requests
+
+(defn write-callback [writer msg]
+  (.write writer msg)
+  writer)
+
+(defn flush-callback [writer]
+  (.flush writer)
+  writer)
+
+(defn logger-flush []
+  (send logger flush-callback))
+
+(defn log-request [request-str]
+  (send logger write-callback (str request-str "\n"))
+
+  (when (= 0 (mod @global-counter flush-every))
+    (logger-flush))
   )

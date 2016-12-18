@@ -17,7 +17,7 @@
             [ads.views :as v]
             [ads.models :as m]
             [ads.helpers :as h])
-  )
+  (:import (java.util Date)))
 
 
 
@@ -31,6 +31,7 @@
            (GET "/signup" [req] v/signup)
            (POST "/signup" [req] v/post-signup)
            (GET "/logout" [req] v/logout)
+           (GET "/log-flush" [req] v/log-flush)
 
            (GET "/:category-slug" [category-slug :as req] (v/category category-slug req))
            (GET "/:category-slug/:ad-id" [category-slug ad-id :as req] (v/ad category-slug ad-id req))
@@ -40,19 +41,22 @@
            (route/resources "/")
            (route/not-found "Not Found"))
 
+(defn now [] (.. (Date.) (toString)))
+
 (defn wrap-custom [handler]
   (fn [request]
-    (let [request (assoc request :counter (h/register-new-request-to-counter (:uri request)))
+    (let [request (assoc request :counter (h/counter-update (:uri request)))
           response (handler request)
           req-ip (:remote-addr request)
           response-len (count (:body response))
           method (:request-method request)
           uri (:uri request)
           response-status (:status response)
-          log-str (str req-ip " " method " " uri " " response-status " " response-len)
+          log-str (str (now) " " req-ip " " method " " uri " " response-status " " response-len)
           ]
 
       (println log-str)
+      (h/log-request log-str)
       response)))
 
 (def app
@@ -67,18 +71,14 @@
                     }))
       (wrap-authentication (backends/session))
       (wrap-authorization (backends/session))
-      (wrap-custom)
+      (wrap-custom)                                         ; atom and agent logic here
       (reload/wrap-reload {:dirs ["src" "resources/pages"]})
 
       )
   )
 
-
 (defn main []
-
   )
-
-
 
 (defn app_init []
   (m/init-db)
