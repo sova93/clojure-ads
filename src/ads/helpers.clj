@@ -2,7 +2,11 @@
   (:require
     [ads.models :as m]
     [buddy.hashers :as hashers]
+    [selmer.parser :refer [render-file cache-off! cache-on!]]
     ))
+
+(cache-off!)
+;(cache-on!)
 
 (defn login-user [login password]
   (let [user-from-db (m/get-username login)]
@@ -21,8 +25,18 @@
 
 (def counter (atom {}))
 
-(defn register-new-request-to-counter [req]
-  (let [uri (:uri req)]
-    (get (swap! counter assoc uri (inc (get @counter uri 0))) uri)
-    ))
+(defn get-counter-value [k]
+  (get counter k))
 
+(defn register-new-request-to-counter [uri]
+  (get (swap! counter assoc uri (inc (get @counter uri 0))) uri)
+  )
+
+(defn file-renderer [req filename context-map & xs]
+  ;(render-file filename context-map xs)
+  (render-file filename (-> context-map
+                            (assoc :req req)
+                            (assoc :sess (:session req))
+                            (assoc :counter (:counter req))
+                            ) xs)
+  )

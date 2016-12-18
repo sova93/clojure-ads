@@ -15,14 +15,15 @@
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [selmer.parser :as parser]
             [ads.views :as v]
-            [ads.models :as m])
+            [ads.models :as m]
+            [ads.helpers :as h])
   )
 
 
 
 (defroutes app-routes
            (GET "/" [req] v/index)
-  (GET "/ads" [req] v/ads)
+           (GET "/ads" [req] v/ads)
            (GET "/login" [req] v/login)
            (GET "/add-ads" [req] v/add-ads)
            (POST "/add-ads" [req] v/post-add-ads)
@@ -39,19 +40,37 @@
            (route/resources "/")
            (route/not-found "Not Found"))
 
+(defn wrap-custom [handler]
+  (fn [request]
+    (let [request (assoc request :counter (h/register-new-request-to-counter (:uri request)))
+          response (handler request)
+          req-ip (:remote-addr request)
+          response-len (count (:body response))
+          method (:request-method request)
+          uri (:uri request)
+          response-status (:status response)
+          log-str (str req-ip " " method " " uri " " response-status " " response-len)
+          ]
+
+      (println log-str)
+      response)))
 
 (def app
-  (->
-    (wrap-defaults app-routes (assoc site-defaults :session {
-                                                             :store (session-store/cookie-store {
-                                                                                                 :key "aaaaaaaaaaaaaaaa"
-                                                                                                 })
-                                                             }))
-    (wrap-authentication (backends/session))
-    (wrap-authorization (backends/session))
-    (reload/wrap-reload {:dirs ["src" "resources/pages"]})
+  (-> app-routes
+      (wrap-defaults
+        (assoc site-defaults
+          :session {
+                    :store (session-store/cookie-store
+                             {
+                              :key "aaaaaaaaaaaaaaaa"
+                              })
+                    }))
+      (wrap-authentication (backends/session))
+      (wrap-authorization (backends/session))
+      (wrap-custom)
+      (reload/wrap-reload {:dirs ["src" "resources/pages"]})
 
-    )
+      )
   )
 
 
