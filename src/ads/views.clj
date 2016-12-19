@@ -181,3 +181,16 @@
 
 (defn ad [category-slug ad-id req]
   (h/file-renderer req "ad.html" {}))
+
+(defn about [req]
+  (h/markup
+    (html
+      (head)
+      (body
+        (h1 "Students of group #251003")
+        (ul {class "my-list"}
+            (li "Sheko Maxim")
+            (li "Skavysh Maxim")
+            (li "Serkova Olga"))
+        (p {class content title "stop pointing at me!"}
+           Execution of our lablatory work 3 DSL )))))

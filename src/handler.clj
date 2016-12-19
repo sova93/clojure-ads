@@ -32,6 +32,7 @@
            (POST "/signup" [req] v/post-signup)
            (GET "/logout" [req] v/logout)
            (GET "/log-flush" [req] v/log-flush)
+            (GET "/about" [req] v/about)
 
            (GET "/:category-slug" [category-slug :as req] (v/category category-slug req))
            (GET "/:category-slug/:ad-id" [category-slug ad-id :as req] (v/ad category-slug ad-id req))
